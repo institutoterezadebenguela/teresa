@@ -38,7 +38,7 @@ function ProjectCard({ id, title, description, image, alt }) {
         <p class="text-gray-600 mb-4 leading-relaxed">
           ${description}
         </p>
-        <a href="#${id}" class="inline-flex items-center space-x-2 project-link">
+        <a href="/projetos.html#project-${id}" class="inline-flex items-center space-x-2 project-link">
           <span>Saiba mais</span>
           <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
