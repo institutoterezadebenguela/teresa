@@ -5,8 +5,7 @@ const projects = [
     title: "Festança do Congo",
     description:
       "Testemunho vivo da resistência afro-brasileira em Vila Bela da Santíssima Trindade. Celebração anual em julho que une rituais católicos e tradições africanas através das históricas Danças do Congo e do Chorado.",
-    image:
-      "https://img.freepik.com/vetores-premium/abaixo-escuro-com-efeito-grunge_278222-10487.jpg?semt=ais_hybrid&w=740&q=80",
+    image: "assets/imagem1.jpeg",
     alt: "Festança do Congo",
   },
   {
@@ -14,8 +13,7 @@ const projects = [
     title: "Festival de Praia",
     description:
       "Anteriormente Festival de Pesca, este evento anual (setembro-outubro) movimenta o turismo e cultura local. O Instituto apoia grupos culturais sem financiamento municipal direto.",
-    image:
-      "https://img.freepik.com/vetores-premium/abaixo-escuro-com-efeito-grunge_278222-10487.jpg?semt=ais_hybrid&w=740&q=80",
+    image: "",
     alt: "Festival de Praia",
   },
   {
@@ -33,14 +31,6 @@ const projects = [
 function ProjectCard({ id, title, description, image, alt }) {
   return `
     <div class="group project-card">
-      <div class="relative h-64 overflow-hidden">
-        <img
-          src="${image}"
-          alt="${alt}"
-          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          loading="lazy"
-          onerror="this.src='https://img.freepik.com/vetores-premium/abaixo-escuro-com-efeito-grunge_278222-10487.jpg?semt=ais_hybrid&w=740&q=80'">
-      </div>
       <div class="p-6">
         <h3 class="text-xl font-bold mb-3 project-title">
           ${title}
