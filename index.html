@@ -250,7 +250,7 @@
       </div>
     </div>
   </section>
-  
+
   <section class="projects-section section-bg-light h-screen">
     <div class="w-full pt-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -435,55 +435,7 @@
       }
       return 0;
     }
-
-    // Scroll controlado apenas para desktop
-    if (isDesktop) {
-      window.addEventListener('wheel', (e) => {
-        e.preventDefault();
-
-        if (isScrolling) return;
-
-        isScrolling = true;
-        currentSection = getCurrentSection();
-
-        if (e.deltaY > 0) {
-          if (currentSection < sections.length - 1) {
-            scrollToSection(currentSection + 1);
-          }
-        } else {
-          if (currentSection > 0) {
-            scrollToSection(currentSection - 1);
-          }
-        }
-
-        setTimeout(() => {
-          isScrolling = false;
-        }, 1000);
-      }, { passive: false });
-
-      window.addEventListener('keydown', (e) => {
-        if (isScrolling) return;
-
-        currentSection = getCurrentSection();
-
-        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-          e.preventDefault();
-          isScrolling = true;
-          if (currentSection < sections.length - 1) {
-            scrollToSection(currentSection + 1);
-          }
-          setTimeout(() => { isScrolling = false; }, 1000);
-        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-          e.preventDefault();
-          isScrolling = true;
-          if (currentSection > 0) {
-            scrollToSection(currentSection - 1);
-          }
-          setTimeout(() => { isScrolling = false; }, 1000);
-        }
-      });
-    }
-
+    
     window.addEventListener('scroll', () => {
       const scrolled = window.pageYOffset;
       const heroSection = document.querySelector('.hero-section');
