@@ -122,24 +122,9 @@
             <p class="text-gray-600">Fundado por seis membros dedicados à preservação cultural</p>
           </div>
 
-          <div class="space-y-6">
-            <div class="border-l-4 border-primary pl-4">
-              <h4 class="font-bold text-gray-900">Robin "Robinho" Profeta da Cruz</h4>
-              <p class="text-sm text-gray-600">Presidente</p>
-              <p class="text-xs text-gray-500 mt-1">Residente em Vila Bela</p>
-            </div>
-
-            <div class="border-l-4 border-secondary pl-4">
-              <h4 class="font-bold text-gray-900">Elísio Ferreira de Souza</h4>
-              <p class="text-sm text-gray-600">Diretor Executivo</p>
-              <p class="text-xs text-gray-500 mt-1">Residente em Vila Bela</p>
-            </div>
-
-            <div class="border-l-4 border-accent pl-4">
-              <h4 class="font-bold text-gray-900">Nelson Lopes Filho</h4>
-              <p class="text-sm text-gray-600">Diretor Administrativo</p>
-              <p class="text-xs text-gray-500 mt-1">Residente em Cuiabá</p>
-            </div>
+          <div class="space-y-6" id="board-members-container">
+            <!-- Os membros serão injetados via JavaScript -->
+            <p class="text-gray-500 text-center">Carregando diretoria...</p>
           </div>
 
           <div class="mt-8 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
@@ -373,6 +358,39 @@
   </section>
 
   <script>
+    // Carregar a diretoria vinda do backend
+    async function loadBoardMembers() {
+      const container = document.getElementById('board-members-container');
+      
+      try {
+        const response = await fetch('/api/board');
+        if (!response.ok) throw new Error('Erro na rede');
+        
+        const members = await response.json();
+        
+        if(members.length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-500 text-center">Nenhum membro cadastrado.</p>';
+          return;
+        }
+
+        const colors = ['border-primary', 'border-secondary', 'border-accent'];
+        
+        container.innerHTML = members.map((member, index) => {
+          const colorClass = colors[index % colors.length];
+          return `
+            <div class="border-l-4 ${colorClass} pl-4">
+              <h4 class="font-bold text-gray-900">${member.name}</h4>
+              <p class="text-sm text-gray-600">${member.role}</p>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('Falha ao carregar a diretoria:', error);
+        container.innerHTML = '<p class="text-sm text-red-500 text-center">Não foi possível carregar a diretoria no momento.</p>';
+      }
+    }
+
     // Detectar se é mobile
     function isMobileDevice() {
       return window.innerWidth <= 1024 ||
@@ -461,6 +479,8 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
+      loadBoardMembers();
+
       if (window.ProjectsManager) {
         window.ProjectsManager.loadProjects();
       }

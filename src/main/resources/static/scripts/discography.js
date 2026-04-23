@@ -1,102 +1,4 @@
-const discographyTracks = [
-  {
-    id: "track-1",
-    title: "Poema para Vila Bela",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/00 - Poema para Vila Bela",
-  },
-  {
-    id: "track-2",
-    title: "A rosa",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/01 - A rosa",
-  },
-  {
-    id: "track-3",
-    title: "Nunca te darei perdão",
-    artist: "Quilombo Aurora do Quariterê",
-
-    audioFile: "./assets/discografia/02 - Nunca te darei perdão",
-  },
-  {
-    id: "track-4",
-    title: "Campo Verde Serenado",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/03- Campo Verde Serenado",
-  },
-  {
-    id: "track-5",
-    title: "Ranchinho",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/04 - Ranchinho",
-  },
-  {
-    id: "track-6",
-    title: "Ó de casa",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/05 - Mulher ingrata",
-  },
-  {
-    id: "track-7",
-    title: "Pássaro Preto",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/06 - Lembrança de mim",
-  },
-  {
-    id: "track-8",
-    title: "Lamento Sertanejo",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/07 - Mora na terra quem pode",
-  },
-  {
-    id: "track-9",
-    title: "Canção do Carreiro",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/08 - Na beira da praia",
-  },
-  {
-    id: "track-10",
-    title: "Rasqueado Mineiro",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/09 - Vou nadar",
-  },
-  {
-    id: "track-11",
-    title: "Beijinho Doce",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/10 - Vela acesa",
-  },
-  {
-    id: "track-12",
-    title: "Viola Cabocla",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/11 - Passarinho",
-  },
-  {
-    id: "track-13",
-    title: "Cabocla Teresa",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/12 - As onze horas da noite",
-  },
-  {
-    id: "track-14",
-    title: "Cuiabá Formosa",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/14 - Onde está você",
-  },
-  {
-    id: "track-15",
-    title: "O Sabiá e a Grola",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/15 - As folhas da malva gira",
-  },
-  {
-    id: "track-16",
-    title: "Beijinho Doce",
-    artist: "Quilombo Aurora do Quariterê",
-    audioFile: "./assets/discografia/Encerramento",
-  },
-];
+let discographyTracks = [];
 
 class DiscographyCarousel {
   constructor() {
@@ -108,8 +10,16 @@ class DiscographyCarousel {
     this.init();
   }
 
-  init() {
+  async init() {
     if (this.isInitialized) return;
+
+    try {
+        const res = await fetch('/api/discography');
+        discographyTracks = await res.json();
+        this.tracks = discographyTracks;
+    } catch(e) {
+        console.error("Erro carregando discografia", e);
+    }
 
     this.audioPlayer = document.getElementById("audio-player");
 

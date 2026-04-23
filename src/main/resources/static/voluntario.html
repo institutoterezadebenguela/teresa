@@ -44,13 +44,13 @@
     <div class="h-full max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center">
         <div class="space-y-8">
-          <div class="text-center lg:text-left">
+          <div class="text-center lg:text-left" id="volunteer-hero-content">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span style="color: #5E2404;">Transforme vidas através da</span><br>
-              <span class="gradient-text">Cultura Quilombola</span>
+              <span id="hero-title1" style="color: #5E2404;">Transforme vidas através da</span><br>
+              <span id="hero-title2" class="gradient-text">Cultura Quilombola</span>
             </h1>
 
-            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p id="hero-description" class="text-xl text-gray-600 mb-8 leading-relaxed">
               Una-se a uma comunidade apaixonada por preservar tradições centenárias.
               Cada voluntário é uma peça fundamental na nossa missão cultural.
             </p>
@@ -167,8 +167,21 @@
     </div>
   </section>
 
-  <script>
-    document.getElementById('volunteerForm').addEventListener('submit', function (e) {
+  <script>    // Carregar chamadas dinâmicas
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/volunteer/page');
+        if(res.ok) {
+          const data = await res.json();
+          document.getElementById('hero-title1').textContent = data.title1;
+          document.getElementById('hero-title2').textContent = data.title2;
+          document.getElementById('hero-description').textContent = data.description;
+        }
+      } catch (e) {
+        console.error('Textos default mantidos (falha/API offline)', e);
+      }
+    });
+    document.getElementById('volunteerForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const formData = new FormData(this);
@@ -185,15 +198,28 @@
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Enviando...';
       submitButton.disabled = true;
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const motivation = document.getElementById('motivation').value;
-      const age = document.getElementById("age").value;
+      try {
+        const response = await fetch('/api/volunteers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
 
-      const subject = "Candidatura de Voluntário - " + name;
-      const body = `Nome: ${name}\nEmail: ${email}\nMotivação: ${motivation}\nIdade:${age} anos`;
-
-      window.location.href = `mailto:felipeferreiraaguiar9@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        if (response.ok) {
+          alert('Candidatura enviada com sucesso! Logo entraremos em contato.');
+          this.reset();
+        } else {
+          alert('Falha ao enviar candidatura. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar form: ', error);
+        alert('Erro de conexão com o servidor.');
+      } finally {
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+      }
     });
 
     function toggleMobileMenu() {

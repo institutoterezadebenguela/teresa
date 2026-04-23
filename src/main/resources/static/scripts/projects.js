@@ -1,34 +1,6 @@
-// Array de projetos
-const projects = [
-  {
-    id: "projeto-1",
-    title: "Festança do Congo",
-    description:
-      "Testemunho vivo da resistência afro-brasileira em Vila Bela da Santíssima Trindade. Celebração anual em julho que une rituais católicos e tradições africanas através das históricas Danças do Congo e do Chorado.",
-    image: "assets/imagem1.jpeg",
-    alt: "Festança do Congo",
-  },
-  {
-    id: "projeto-2",
-    title: "Festival de Praia",
-    description:
-      "Anteriormente Festival de Pesca, este evento anual (setembro-outubro) movimenta o turismo e cultura local. O Instituto apoia grupos culturais sem financiamento municipal direto.",
-    image: "",
-    alt: "Festival de Praia",
-  },
-  {
-    id: "projeto-3",
-    title: "Dia da Consciência Negra",
-    description:
-      "Evento anual em 20 de novembro para marcar a data com reflexão e valorização da cultura afro-brasileira. O Instituto organiza palestras com personalidades relevantes e ações culturais diversas.",
-    image:
-      "https://img.freepik.com/vetores-premium/abaixo-escuro-com-efeito-grunge_278222-10487.jpg?semt=ais_hybrid&w=740&q=80",
-    alt: "Dia da Consciência Negra",
-  },
-];
-
 // Função para criar o HTML de um projeto
-function ProjectCard({ id, title, description, image, alt }) {
+function ProjectCard({ id, code, title, description, image, alt }) {
+  const projectId = code || id;
   return `
     <div class="group project-card">
       <div class="p-6">
@@ -38,7 +10,7 @@ function ProjectCard({ id, title, description, image, alt }) {
         <p class="text-gray-600 mb-4 leading-relaxed">
           ${description}
         </p>
-        <a href="/projetos.html#project-${id}" class="inline-flex items-center space-x-2 project-link">
+        <a href="/projetos.html#project-${projectId}" class="inline-flex items-center space-x-2 project-link">
           <span>Saiba mais</span>
           <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
         </a>
@@ -49,12 +21,13 @@ function ProjectCard({ id, title, description, image, alt }) {
 
 // Função para renderizar projetos
 function renderProjects(projectsArray, limit = null) {
+  if (!projectsArray) return "";
   const projectsToRender = limit ? projectsArray.slice(0, limit) : projectsArray;
   return projectsToRender.map((project) => ProjectCard(project)).join("");
 }
 
 // Função para carregar projetos no DOM
-function loadProjects() {
+async function loadProjects() {
   const projectsContainer = document.getElementById("projects-container");
 
   if (projectsContainer) {
@@ -68,8 +41,11 @@ function loadProjects() {
       </div>
     `;
 
-    // Simular delay de carregamento
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/projects');
+      const projects = await response.json();
+      window.ProjectsManager.projects = projects;
+
       projectsContainer.innerHTML = renderProjects(projects, 3);
 
       // Adicionar animação de entrada
@@ -83,13 +59,16 @@ function loadProjects() {
           card.style.transform = "translateY(0)";
         }, index * 150);
       });
-    }, 500);
+    } catch (e) {
+      console.error(e);
+      projectsContainer.innerHTML = '<p class="text-center text-red-500">Erro ao carregar projetos.</p>';
+    }
   }
 }
 
 // Exportar funcionalidades
 window.ProjectsManager = {
-  projects,
+  projects: [],
   loadProjects,
   renderProjects,
   ProjectCard,

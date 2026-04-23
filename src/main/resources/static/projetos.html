@@ -82,55 +82,7 @@
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    const detailedProjects = [
-      {
-        id: "projeto-1",
-        title: "Festança do Congo",
-        subtitle: "Testemunho Vivo da Resistência Afro-Brasileira",
-        description: "Em Vila Bela da Santíssima Trindade, primeira capital de Mato Grosso, a Festança do Congo é muito mais que uma celebração - é um testemunho vivo da resistência, fé e identidade do povo negro que moldou a região. Esta complexa teia de rituais católicos e manifestações culturais de matriz africana, em devoção a São Benedito, ao Divino Espírito Santo e à Santíssima Trindade, transforma a cidade em julho num palco de história e ancestralidade.",
-        features: [
-          { icon: "fas fa-crown", text: "Dança do Congo: encenação diplomática entre reinos africanos" },
-          { icon: "fas fa-wine-bottle", text: "Dança do Chorado: tributo à resiliência das mulheres negras" },
-          { icon: "fas fa-church", text: "Rituais católicos integrados às tradições de matriz africana" },
-          { icon: "fas fa-home", text: "Cortejos e rezas cantadas nas casas dos festeiros" }
-        ],
-        impact: "Patrimônio imaterial de inestimável importância para o Brasil, a festividade preserva a memória e identidade afro-brasileira, reunindo moradores e visitantes numa celebração comunitária de fé e ancestralidade que remonta ao período pós-escravidão.",
-        image: "assets/imagem1.jpeg",
-        details: {
-          dancaCongo: "O coração da festa é a dramática Dança do Congo, que encena um conflito diplomático entre o altivo Rei do Congo e o Embaixador do Rei de Bamba, que pede a mão da filha real em casamento. A recusa gera uma 'guerra' simbólica travada com cantos e coreografias, que se resolve em celebração e união.",
-          dancaChorado: "Realizada pelas mulheres da comunidade com garrafas de 'Kanjinjim' equilibradas na cabeça, a Dança do Chorado é um tributo à astúcia das mulheres negras durante a escravidão, demonstrando seu papel central na preservação cultural.",
-          tradicaoFamiliar: "Os cargos de Rei, Embaixador e outros personagens são passados de geração em geração, mantendo viva a tradição familiar e comunitária."
-        }
-      },
-      {
-        id: "projeto-2",
-        title: "Festival de Praia",
-        subtitle: "Movimentando Turismo e Cultura Local",
-        description: "Anteriormente conhecido como Festival de Pesca, o Festival de Praia é um evento estratégico que movimenta o turismo e fortalece a cultura local de Vila Bela da Santíssima Trindade. Realizado anualmente entre setembro e outubro, representa uma importante oportunidade de desenvolvimento econômico e cultural para a região.",
-        features: [
-          { icon: "fas fa-calendar-alt", text: "Realizado anualmente entre setembro e outubro" },
-          { icon: "fas fa-plane", text: "Movimenta o turismo regional e gera renda local" },
-          { icon: "fas fa-hands-helping", text: "Instituto apoia grupos sem financiamento municipal" },
-          { icon: "fas fa-users", text: "Viabiliza participação de atividades culturais diversas" }
-        ],
-        impact: "O festival é fundamental para o desenvolvimento turístico da região, proporcionando visibilidade para grupos culturais que não conseguem financiamento direto da prefeitura e criando oportunidades econômicas para a comunidade local.",
-        image: "",
-      },
-      {
-        id: "projeto-3",
-        title: "Dia da Consciência Negra",
-        subtitle: "Reflexão e Valorização da Cultura Afro-Brasileira",
-        description: "O Dia da Consciência Negra, celebrado em 20 de novembro, é marcado pelo Instituto Tereza de Benguela como um momento especial de reflexão e valorização da cultura afro-brasileira. Este evento anual representa uma oportunidade fundamental para promover o diálogo, a educação e o reconhecimento da importância da herança africana na formação da identidade brasileira.",
-        features: [
-          { icon: "fas fa-calendar-check", text: "Celebrado anualmente em 20 de novembro" },
-          { icon: "fas fa-microphone", text: "Palestras com personalidades relevantes da cultura afro-brasileira" },
-          { icon: "fas fa-palette", text: "Ações culturais e artísticas diversificadas" },
-          { icon: "fas fa-graduation-cap", text: "Reflexão e valorização da identidade afro-brasileira" }
-        ],
-        impact: "O evento promove a consciência racial e fortalece o orgulho da identidade quilombola, criando espaços de diálogo e educação que conectam gerações e valorizam a rica herança cultural afro-brasileira de Vila Bela da Santíssima Trindade.",
-        image: "assets/imagem2.png",
-      },
-    ];
+    let detailedProjects = [];
 
     function createProjectSection(project, index) {
       const sectionNumber = String(index + 1).padStart(2, '0');
@@ -203,6 +155,38 @@
           </div>
         </section>
       `;
+    }
+
+    async function loadProjectsFromAPI() {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) throw new Error('Erro ao buscar projetos');
+        
+        const data = await response.json();
+        
+        // Mapear os campos do backend para nossa estrutura de layout
+        detailedProjects = data.map(backendProj => ({
+          id: backendProj.code || 'projeto-' + backendProj.id,
+          title: backendProj.title || '',
+          subtitle: backendProj.subtitle || '',
+          description: backendProj.description || '',
+          impact: backendProj.impact || '',
+          image: backendProj.image || '',
+          features: backendProj.features || [],
+          details: backendProj.details || {}
+        }));
+
+        renderProjectSections();
+
+        // Ajustar posições e animações logo após renderização
+        setTimeout(() => {
+          adjustSectionNumbers();
+          initAnimations();
+        }, 100);
+
+      } catch (error) {
+        console.error('Erro ao carregar projetos da API:', error);
+      }
     }
 
     function renderProjectSections() {
@@ -291,13 +275,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      renderProjectSections();
-
-      // Ajustar posições após renderização
-      setTimeout(() => {
-        adjustSectionNumbers();
-        initAnimations();
-      }, 100);
+      loadProjectsFromAPI();
 
       document.documentElement.style.scrollBehavior = 'smooth';
 
